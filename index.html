@@ -1,12 +1,73 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>title</title>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script defer src="script.js"></script>
-  </head>
-  <body>
-      <textarea id="text-box" style ='height:500px; width: 500px; border: solid; margin-top: 3%;'></textarea>
-  </body>
+
+    <script src="https://kit.fontawesome.com/07754de8e3.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+     function load(){   
+        let output = document.getElementById('ContentBox');
+        let buttons = document.getElementsByClassName("Button_navbar");
+        
+        for (let btn of buttons) {
+            btn.addEventListener('click', () => {
+                let cmd = btn.dataset['command'];
+                document.execCommand(cmd, false, null);  
+            })
+        }
+ 
+     }
+
+        
+    </script>
+
+    <style>
+        .navbar-nav{
+            display:flex;
+            list-style: none;
+            margin:2rem 2rem 2rem 2rem;
+        }
+
+        #ContentBox{
+            height: 500px; 
+            width: 97%;
+            margin: 2rem;
+            padding: 2rem;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+<body onload=load()>
+<nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+        <li class="Tool">
+            <button class="Button_navbar" data-command='justifyLeft' onclick=""><div class="fas fa-align-left"></div></button>
+        </li>
+        <li class="Tool">
+            <button class="Button_navbar" data-command='justifyCenter' ><div class="fas fa-align-center"></div></button>
+        </li>
+        <li class="Tool">
+            <button class="Button_navbar" data-command='justifyRight' ><div class="fas fa-align-right"></div></button>
+        </li>
+        <li class="Tool">
+            <button class="Button_navbar" data-command="bold"><div class="fas fa-bold"></div></button>
+        </li>
+        <li class="Tool">
+            <button class="Button_navbar" data-command="italic"><div class="fas fa-italic"></div></button>
+        </li>
+        <li class="Tool">
+            <button class="Button_navbar" data-command="underline"><div class="fas fa-underline"></div></button>
+        </li>
+    </ul>
+</nav>
+<div id="ContentBox" contenteditable="true"></div>
+
+</body>
+
 </html>
