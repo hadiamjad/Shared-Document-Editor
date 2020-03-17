@@ -1,4 +1,5 @@
 const io = require('socket.io')(3000)
+const io2 = require('socket.io')(3001)
 const sql = require("mssql")
 const dbConfig = {
     server: "DESKTOP-DL240JO",
@@ -6,6 +7,25 @@ const dbConfig = {
     user: "hadi",
     password: "123"
 }
+
+io2.on('connection', socket =>{
+    socket.on('registry-coming', arr => {
+        var con1 = new sql.ConnectionPool(dbConfig)
+        var req1 = new sql.Request(con1)
+        con1.connect(function(err){
+            if(err){
+                console.log(err)
+                return
+            }
+            req1.query("EXEC istUser @u = \""+arr[2]+"\", @pp = \""+arr[1]+"\", @e = \""+arr[0]+"\"", err =>{
+                if(err){
+                    console.log('Username Already taken')
+                    return
+                }
+            })
+    })
+    })
+})
 
 io.on('connection', socket =>{
     socket.on('msg-to-server', textChanges => {
@@ -25,12 +45,6 @@ function setDbms(textChanges){
         }
         req.query("Insert into DataText values(2,'"+textChanges+"','Hadi')")
 
-        req.query("UPDATE DataText SET dataTxt = '"+textChanges+"'",function (err){
-            if(err){
-                console.log(err)
-                return
-            }
-            con.close()
-        })
+        req.query("UPDATE DataText SET dataTxt = '"+textChanges+"'")
     })
 }

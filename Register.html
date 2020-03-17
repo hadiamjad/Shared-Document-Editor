@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-     <link rel="stylesheet" type="text/css" href="style1.css"/>
      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
      <!-- Compiled and minified CSS -->
@@ -10,6 +9,9 @@
 
      <!-- Compiled and minified JavaScript -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+     <script defer src="http://localhost:3001/socket.io/socket.io.js"></script>
+     <script defer src="Register.js"></script>
 <style>
     body{
         width:100%;
@@ -75,11 +77,12 @@
         </div>
         <div class="row center-align">
             <div class="input-field col s12">
-                <p>Already have an account? <a href="" class="modal-trigger">Login</a></p>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Register
+                <p>Already have an account? <a href="Login.html" class="modal-trigger">Login</a></p>
+                <button id ='Register_btn' class="btn waves-effect waves-light" type="submit" name="action">Register
                 </button>
             </div>
         </div>
     </div>
+    
 </body>
 </html>
