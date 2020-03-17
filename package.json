@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "devStart":"nodemon server.js"
+    "devStart": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mssql": "^6.2.0",
     "nodemon": "^2.0.2",
     "socket.io": "^2.3.0"
   }

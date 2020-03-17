@@ -15,3 +15,4 @@ textbox.addEventListener("input", updateTextBoard => {
 function appendText(textChanges){
     textbox.innerHTML=textChanges
 }
+
