@@ -22,6 +22,7 @@ io2.on('connection', socket =>{
                     console.log('Username Already taken')
                     return
                 }
+            con1.close()
             })
     })
     })
@@ -46,5 +47,6 @@ function setDbms(textChanges){
         req.query("Insert into DataText values(2,'"+textChanges+"','Hadi')")
 
         req.query("UPDATE DataText SET dataTxt = '"+textChanges+"'")
+        con.close()
     })
 }
