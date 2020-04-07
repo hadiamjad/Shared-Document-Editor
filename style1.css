@@ -19,3 +19,11 @@ body{
     border-radius: 25%;
     margin:0 auto; 
 }
+
+@media only screen /*To handle ipad screen*/
+and (min-device-width : 768px) 
+and (max-device-width : 1024px)  { 
+    .register{
+        margin-top:200px;
+    }
+}
