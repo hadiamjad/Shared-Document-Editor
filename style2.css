@@ -1,0 +1,77 @@
+#Notepad{
+    width:100%;
+    height:100rem;
+    Padding:10px;
+}
+.navbar-custom{
+    background-color:#26a69a;
+    color:black;
+    border-radius: 8px 8px 0px 0px;
+    width:100%;
+}
+
+.nav-item{
+    color:black;
+}
+#NavBar{
+    border:0.5px solid #ddd;
+    padding:10px;
+    background-color:#26a69a;
+    color:black;
+    width:100%;
+}
+#NavBar > button{
+    color:black;
+    border:none;
+    outline:none;
+    background-color:transparent;
+    cursor:pointer;
+}
+#NavBar > button:hover{
+    background-color: #4cb1a7;
+}
+#ContentBox{
+    border:2px solid #ddd;
+    height:100%;
+    width:100%;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+#Main_contentBox{
+    height:100%;
+    width:100%;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+#Font_color{
+    width:20px;
+    border:none;
+    outline:none;
+    background-color: transparent;
+    vertical-align:middle;
+}
+#Font_size{
+    background-color: transparent;
+    border:0.5px solid #ddd;
+}
+#Font_picker{
+    background-color: transparent;
+    border:0.5px solid #ddd;
+}
+#Footer{
+    background-color:#26a69a;
+    color:black;
+    border-radius: 0px 0px 8px 8px;
+    width:100%;
+    float:left;
+}
+#Name_document{
+    background-color: transparent;
+    border:none;
+    outline:none;
+    padding:10px; 
+    width:200px;
+    overflow:scroll;
+    text-overflow: ellipsis;
+}

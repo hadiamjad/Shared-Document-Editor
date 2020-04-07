@@ -1,64 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8"/>
-     <!-- Compiled and minified CSS -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<meta charset="UTF-8"/>
+	 <link rel="stylesheet" type="text/css" href="style.css"/>
+	 <!-- Compiled and minified CSS -->
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
-     <!-- Compiled and minified JavaScript -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<style>
-    body{
-        width:100%;
-        height:100%;
-        display:flex;
-        align-items:center;
-        Justify-content:center;
-    }
-
-    .login{
-        max-width:500px;
-        border:1px solid #ddd;
-        padding: 35px;
-        margin:20px;
-        border-radius: 10px;  
-    }
-
-    .Logo{
-        height:50px;
-        border-radius: 25%;
-        margin:0 auto; 
-    }
-</style>             
+	 <!-- Compiled and minified JavaScript -->
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+			 
 
 
 </head>
 <body>
-    <div class="login">
-        <div class="row center-align">
-            <img class="Logo " src="../notepad-icon-png-8-original.png"></img>
-        </div>
-        <div class="row center-align">
-            <h5>Sign in</h5>
-            <h6>Enter your Notepad credentials to sign in </h6>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input id="Email_PlaceHolder" type="Email" class="validate">
-                <label for="Email_PlaceHolder">Email</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input id="Password_PlaceHolder" type="Password" class="validate">
-                <label for="Password_PlaceHolder">Password</label>
-                <div><a href="#"><b>Forgot password?</b></a></div>
-            </div>
-        </div>
-        <div class="row left-align">
-            <div class="col s6 "><a href="#">Create account</a></div>
-            <div class="col s6 right-align"><a class="waves-effect waves-light btn">Login</a></div>
-        </div>
-    </div>
+	<div class="login">
+		<div class="row center-align">
+			<img class="Logo " src="notepad-icon-png-8-original.png"></img>
+		</div>
+		<div class="row center-align">
+			<h5>Sign in</h5>
+			<h6>Enter your Notepad credentials to sign in </h6>
+		</div>
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="Email_PlaceHolder" type="Email" class="validate">
+				<label for="Email_PlaceHolder">Email</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="input-field col s12">
+				<input id="Password_PlaceHolder" type="Password" class="validate">
+				<label for="Password_PlaceHolder">Password</label>
+				<div><a href="#"><b>Forgot password?</b></a></div>
+			</div>
+		</div>
+		<div class="row center-align">
+			<div class="input-field col s12">
+					<p>Do not have account? <a href="" class="modal-trigger">Register</a></p>
+			<a class="waves-effect waves-light btn">Login</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

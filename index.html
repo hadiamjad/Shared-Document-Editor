@@ -1,73 +1,252 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script defer src="script.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="style2.css"/>
     <script src="https://kit.fontawesome.com/07754de8e3.js" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-     function load(){   
-        let output = document.getElementById('ContentBox');
-        let buttons = document.getElementsByClassName("Button_navbar");
-        
-        for (let btn of buttons) {
-            btn.addEventListener('click', () => {
-                let cmd = btn.dataset['command'];
-                document.execCommand(cmd, false, null);  
-            })
-        }
- 
-     }
 
-        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+    <script src="jquery.multiform-text-editor.js"></script>
+
+    <script>
+
+        function load(){
+            var textbox=Main_contentBox.document;
+            textbox.designMode="on";
+
+            $('#Main_contentBox').contents().find('body').css("word-wrap", "break-word");
+
+            clicked_bold = true;
+            $("#bold").click(function(){
+                if(clicked_bold){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_bold  = false;
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_bold  = true;
+                }   
+            });
+
+            clicked_italic = true;
+            $("#italic").click(function(){
+                if(clicked_italic){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_italic  = false;
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_italic  = true;
+                }   
+            });
+
+            clicked_underline = true;
+            $("#underline").click(function(){
+                if(clicked_underline){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_underline  = false;
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_underline  = true;
+                }   
+            });
+
+            clicked_JustifyLeft = true;
+            clicked_JustifyRight = true;
+            clicked_JustifyCenter = true;
+            $("#justifyLeft").click(function(){
+                if(clicked_JustifyLeft){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_JustifyLeft  = false;
+                    $("#justifyCenter").css('background-color', '#26a69a');
+                    clicked_JustifyCenter  = true;
+                    $("#justifyRight").css('background-color', '#26a69a');
+                    clicked_JustifyRight  = true; 
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_JustifyLeft  = true;
+                }   
+            });
+
+            $("#justifyRight").click(function(){
+                if(clicked_JustifyRight){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_JustifyRight  = false;
+                    $("#justifyCenter").css('background-color', '#26a69a');
+                    clicked_JustifyCenter  = true;
+                    $("#justifyLeft").css('background-color', '#26a69a');
+                    clicked_JustifyLeft  = true; 
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_JustifyRight  = true;
+                }   
+            });
+
+            $("#justifyCenter").click(function(){
+                if(clicked_JustifyCenter){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_JustifyCenter  = false;
+                    $("#justifyLeft").css('background-color', '#26a69a');
+                    clicked_JustifyLeft  = true;
+                    $("#justifyRight").css('background-color', '#26a69a');
+                    clicked_JustifyRight  = true; 
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_JustifyCenter  = true;
+                }   
+            });
+
+            clicked_orderedList=true;
+            clicked_unorderedList=true;
+            $("#orderedList").click(function(){
+                if(clicked_orderedList){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_orderedList  = false;
+                    $("#unorderedList").css('background-color', '#26a69a');
+                    clicked_unorderedList  = true;
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_orderedList  = true;
+                }   
+            });
+
+            $("#unorderedList").click(function(){
+                if(clicked_unorderedList){
+                    $(this).css('background-color', '#4cb1a7');
+                    clicked_unorderedList  = false;
+                    $("#orderedList").css('background-color', '#26a69a');
+                    clicked_orderedList  = true;
+                } else {
+                    $(this).css('background-color', '#26a69a');
+                    clicked_unorderedList  = true;
+                }   
+            });
+
+            /*
+            textbox.addEventListener("input",function(){
+                var iframe = document.getElementById("Main_contentBox");
+                var elmnt = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                document.getElementById("temp").innerHTML=elmnt.innerHTML;
+            },false)*/
+            
+            bold.addEventListener("click",function(){
+                textbox.execCommand("Bold",false,null);
+            },false)
+
+            italic.addEventListener("click",function(){
+                textbox.execCommand("Italic",false,null);
+            },false)  
+            
+            underline.addEventListener("click",function(){
+                textbox.execCommand("Underline",false,null);
+            },false)
+
+            justifyLeft.addEventListener("click",function(){
+                textbox.execCommand("JustifyLeft",false,null);
+            },false)  
+
+            justifyCenter.addEventListener("click",function(){
+                textbox.execCommand("JustifyCenter",false,null);
+            },false) 
+
+            justifyRight.addEventListener("click",function(){
+                textbox.execCommand("JustifyRight",false,null);
+            },false) 
+
+            orderedList.addEventListener("click",function(){
+                textbox.execCommand("InsertOrderedList",false,null);
+                
+            },false)
+
+            unorderedList.addEventListener("click",function(){
+                textbox.execCommand("InsertUnorderedList",false,null);
+            },false)
+
+            Font_color.addEventListener("change",function(event){
+                textbox.execCommand("ForeColor",false,event.target.value)
+            },false)
+
+            Font_picker.addEventListener("change",function(event){
+                textbox.execCommand("FontName",false,event.target.value)
+            },false)
+
+            Font_size.addEventListener("change",function(event){
+                textbox.execCommand("FontSize",false,event.target.value)
+            },false)
+
+        }
     </script>
-
-    <style>
-        .navbar-nav{
-            display:flex;
-            list-style: none;
-            margin:2rem 2rem 2rem 2rem;
-        }
-
-        #ContentBox{
-            height: 500px; 
-            width: 97%;
-            margin: 2rem;
-            padding: 2rem;
-            border: 1px solid grey;
-        }
-    </style>
 </head>
-<body onload=load()>
-<nav class="navbar navbar-default">
-    <ul class="nav navbar-nav">
-        <li class="Tool">
-            <button class="Button_navbar" data-command='justifyLeft' onclick=""><div class="fas fa-align-left"></div></button>
-        </li>
-        <li class="Tool">
-            <button class="Button_navbar" data-command='justifyCenter' ><div class="fas fa-align-center"></div></button>
-        </li>
-        <li class="Tool">
-            <button class="Button_navbar" data-command='justifyRight' ><div class="fas fa-align-right"></div></button>
-        </li>
-        <li class="Tool">
-            <button class="Button_navbar" data-command="bold"><div class="fas fa-bold"></div></button>
-        </li>
-        <li class="Tool">
-            <button class="Button_navbar" data-command="italic"><div class="fas fa-italic"></div></button>
-        </li>
-        <li class="Tool">
-            <button class="Button_navbar" data-command="underline"><div class="fas fa-underline"></div></button>
-        </li>
-    </ul>
-</nav>
-<div id="ContentBox" contenteditable="true"></div>
+<body onload="load()">
+    <div id="Notepad">
+        <div id="TopBar">
+            <nav class="navbar navbar-expand-md navbar-custom">
+                <a href="#"  >
+                    <img src="notepad-icon-png-8-original.png" height="28" >
+                </a>
+                <input id="Name_document"  value="Untitled document">
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ml-auto">
+                        <a href="#" class="nav-item nav-link ">File</a>
+                        <a href="#" class="nav-item nav-link">Export</a>
+                        <a href="#" class="nav-item nav-link">Collaborate</a>
+                        <a href="#" class="nav-item nav-link">Help</a>
+                        
+                    </div>
+                </div>
+            </nav>
+        </div>
 
+        <div id="NavBar">  
+            <select id="Font_picker" class="col-sm-2">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Calibri">Calibri</option>
+                <option value="sans-serif">Sans-Serif</option>
+                <option value="cursive">Cursive</option>
+            </select>
+            <select id="Font_size" class="col-sm-1" >
+                <option value="1">11</option>
+                <option value="2">12</option>
+                <option value="3">13</option>
+                <option value="4">14</option>
+                <option value="5">15</option>
+                <option value="6">16</option>
+                <option value="7">17</option>
+                <option value="8">18</option>
+            </select>
+            <input type="color" id="Font_color" title="Font color" ></input>
+            <text style=color:#ddd;margin-right:2%;margin-left:2% >|</text> 
+            <button class="Button_navbar" title="Bold" id="bold" class="col-sm-1"><div class="fas fa-bold"></div></button>
+            <button class="Button_navbar" title="Italic" id="italic" class="col-sm-1"><div class="fas fa-italic" ></div></button>
+            <button class="Button_navbar" title="Underline"id="underline" class="col-sm-1"><div class="fas fa-underline" ></div></button>
+            <text style=color:#ddd;margin-right:2%;margin-left:2%>|</text>
+            <button class="Button_navbar" title="Left Justify" id='justifyLeft' class="col-sm-1"><div class="fas fa-align-left"></div></button>
+            <button class="Button_navbar" title="Center Justify" id='justifyCenter' class="col-sm-1" ><div class="fas fa-align-center"></div></button>
+            <button class="Button_navbar" title="Right Justify" id='justifyRight' class="col-sm-1"><div class="fas fa-align-right"></div></button> 
+            <text style=color:#ddd;margin-right:2%;margin-left:2%>|</text>
+            <button class="Button_navbar" title="Ordered List" id='orderedList' class="col-sm-1"><div class="fa fa-list-ol" ></div></button>
+            <button class="Button_navbar" title="Unordered List" id='unorderedList' class="col-sm-1"><div class="fas fa-list-ul" ></div></button> 
+        </div>
+        <div id="ContentBox">
+            <iframe id="Main_contentBox" name="Main_contentBox" frameborder="0"></iframe>
+        </div>
+        <div id="Footer">
+            <span id="User_editing" class="col">Action:User 1 Editing</span>
+            <span id="User_editing" class="col">Active Users List</span>
+        </div>
+    </div>
+    <script>
+    var fonts =document.querySelectorAll("select#Font_picker > option");
+    for(var i=0;i<fonts.length;i++){
+        fonts[i].style.fontFamily=fonts[i].value;
+    }
+    </script>
 </body>
-
 </html>

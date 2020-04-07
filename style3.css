@@ -1,0 +1,30 @@
+
+.navbar-custom{
+    background-color:#26a69a;
+    color:black;
+    border-radius: 8px 8px 0px 0px;
+    width:100%;
+}
+#Notepad{
+    Padding:10px;
+    width:100%;
+}
+.Box{
+    Padding:10px;
+    border-bottom:1px solid #ddd; 
+    display: flex;
+    width:100%;
+}
+.Documents{
+    border:1px solid #ddd;
+    width:100%;
+}
+
+.Icons{
+    display:flex;
+}
+.Title{
+    width:100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
