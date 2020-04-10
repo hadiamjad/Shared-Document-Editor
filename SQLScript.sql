@@ -30,3 +30,6 @@ insert into UserData values(@u, @pp, @e)
 
 EXEC istUser @u = "Hadi", @pp = "123", @e = "h@gmail.com";
 ------------------------------------------
+CREATE PROCEDURE LoginReq @pp varchar(15), @e varchar(15)
+AS
+select email from UserData where email = @e AND pass = @pp

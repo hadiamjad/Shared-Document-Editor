@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	 <link rel="stylesheet" type="text/css" href="style.css"/>
+	 <link rel="stylesheet" type="text/css" href="./static/css/style.css"/>
 	 <!-- Compiled and minified CSS -->
 	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
@@ -14,33 +14,36 @@
 
 </head>
 <body>
-	<div class="login">
-		<div class="row center-align">
-			<img class="Logo " src="notepad-icon-png-8-original.png"></img>
-		</div>
-		<div class="row center-align">
-			<h5>Sign in</h5>
-			<h6>Enter your Notepad credentials to sign in </h6>
-		</div>
-		<div class="row">
-			<div class="input-field col s12">
-				<input id="Email_PlaceHolder" type="Email" class="validate">
-				<label for="Email_PlaceHolder">Email</label>
+	<form id='login-form' method ="POST" action ="/login">
+		<div class="login">
+			<div class="row center-align">
+				<img class="Logo " src="./static/notepad-icon-png-8-original.png"></img>
+			</div>
+			<div class="row center-align">
+				<h5>Sign in</h5>
+				<h6>Enter your Notepad credentials to sign in </h6>
+			</div>
+			<div class="row">
+				<div class="input-field col s12">
+					<input id="Email_PlaceHolder" name="Email" type="Email" class="validate">
+					<label for="Email_PlaceHolder">Email</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s12">
+					<input id="Password_PlaceHolder" name="Password" type="Password" class="validate">
+					<label for="Password_PlaceHolder">Password</label>
+					<div><a href="#"><b>Forgot password?</b></a></div>
+				</div>
+			</div>
+			<div class="row center-align">
+				<div class="input-field col s12">
+						<p>Do not have account? <a href="http://localhost:3000/Register" class="modal-trigger">Register</a></p>
+						<button id="Login_Button" class="btn waves-effect waves-light" type="submit" name="action">Login
+						</button>
+				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="input-field col s12">
-				<input id="Password_PlaceHolder" type="Password" class="validate">
-				<label for="Password_PlaceHolder">Password</label>
-				<div><a href="#"><b>Forgot password?</b></a></div>
-			</div>
-		</div>
-		<div class="row center-align">
-			<div class="input-field col s12">
-					<p>Do not have account? <a href="" class="modal-trigger">Register</a></p>
-			<a class="waves-effect waves-light btn">Login</a>
-			</div>
-		</div>
-	</div>
+	</form>
 </body>
 </html>
