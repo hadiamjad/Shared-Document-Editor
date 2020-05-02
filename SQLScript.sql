@@ -1,39 +1,57 @@
+create database Docs
 create table UserData(
-	username varchar(15) primary key,
-	pass varchar(15),
-	email varchar(15)
+	username varchar(35), 
+	pass varchar(35),
+	email varchar(35) primary key
 )
 go
 
-create table DataText(
-	DocID int primary key,
+create table Document(
+	DocID int identity primary key,
+	title varchar (50),
 	dataTxt varchar(max),
-	creatorUN varchar(15)
+	creator varchar(35),
+	socket int
 )
 go
 
-create table Collab(
-	creatorUN varchar(15),
-	collabUN varchar(15),
-	primary key(creatorUN,collabUN)
+create Table DocumentEditors(
+	DocsID int,
+	email varchar(35),
+	primary key(DocsId,email),
+	Foreign key (DocsID) references Document(DocID),
+	Foreign key (email) references UserData(email)
 )
 go
+
 
 --------------------------------------------------
 Select * from UserData
-Select * from DataText
-Select * from Collab
+Select * from Document
+Select * from DocumentEditors
+--------------------------------------------------
+insert into Document values('Welcome','Welcome to Docs','hadi@gmail.com', 3005)
+insert into Document values('Welcome 2','Welcome to Docs','hadi@gmail.com', 3006)
+DROP PROCEDURE retDocs; 
 ----------------------------------------------------
-CREATE PROCEDURE istUser @u varchar(15), @pp varchar(15), @e varchar(15)
+--insert user--
+CREATE PROCEDURE istUser @u varchar(35), @pp varchar(35), @e varchar(35)
 AS
 insert into UserData values(@u, @pp, @e)
 
 EXEC istUser @u = "Hadi1", @pp = "1234", @e = "hadiyovillee25@gmail.com"
 ------------------------------------------
 --login check--
-CREATE PROCEDURE LoginReq @pp varchar(15), @e varchar(15)
+CREATE PROCEDURE LoginReq @pp varchar(35), @e varchar(35)
 AS
 select email from UserData where email = @e AND pass = @pp
 
 EXEC LoginReq @pp = "123", @e = "dada@d"
+------------------------------------------
+--return documents of user--
+CREATE PROCEDURE retDocs  @e varchar(35)
+AS
+select *  from Document where creator = @e
+
+EXEC retDocs @e = "hadi@gmail.com"
 ------------------------------------------

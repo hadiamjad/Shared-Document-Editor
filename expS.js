@@ -1,6 +1,11 @@
 const express = require('express')
 const fs = require('fs');
 const bodyParser = require('body-parser')
+var getDocs = require('./DocsEngine.js');
+
+var homepage = new getDocs.Homepage();
+
+var CurrentUser = null
 
 const sql = require("mssql")
 const dbConfig = {
@@ -31,6 +36,26 @@ app.get(["/Register"],function (request,response) {
 	})
 })
 
+// Document list landing page is loded
+app.get(["/Docs"],function (request,response) {	  
+    homepage.loadDocuments(CurrentUser,function(docs){
+
+        //console.log(docs[0].generateHtmlforHomepage())
+        var html = ""
+
+        for(i=0; i< docs.length;i++){
+            html+=docs[i].generateHtmlforHomepage();
+        }
+
+        
+        filePath = "Docx.html"
+
+        fs.readFile(filePath,function(err,contents){		
+            response.send(contents.toString().replace("<!-- content -->",html));
+        });
+    });
+})
+
 //login form request handler
 app.post('/login', urlencodedParser, function (req, resp) {
     var con1 = new sql.ConnectionPool(dbConfig)
@@ -54,7 +79,8 @@ app.post('/login', urlencodedParser, function (req, resp) {
                     error = 1
                 }
                 else{
-                    console.log(res)
+                    CurrentUser = req.body.Email
+                    resp.redirect('/Docs')
                 }
             }
         con1.close()
