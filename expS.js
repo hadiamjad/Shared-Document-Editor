@@ -32,7 +32,7 @@ app.get(["/Register"],function (request,response) {
 })
 
 //login form request handler
-app.post('/login', urlencodedParser, function (req, res) {
+app.post('/login', urlencodedParser, function (req, resp) {
     var con1 = new sql.ConnectionPool(dbConfig)
     var req1 = new sql.Request(con1)
 
@@ -49,8 +49,12 @@ app.post('/login', urlencodedParser, function (req, res) {
                 error = 1
             }
             else{
-                if(res.recordset.RecordCount == 0){
+                if(res.rowsAffected[0] == 0){
+                    console.log('Account doesnt exist or wrong password.')
                     error = 1
+                }
+                else{
+                    console.log(res)
                 }
             }
         con1.close()
@@ -74,6 +78,7 @@ app.post('/register', urlencodedParser, function (req, resp) {
             if(err){
                 console.log('Already Have Account')
                 error = 1
+                resp.redirect('/Login')
             }
             else{
                 console.log('Successfully Created')

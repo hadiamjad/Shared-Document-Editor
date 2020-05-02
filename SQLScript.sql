@@ -28,8 +28,12 @@ CREATE PROCEDURE istUser @u varchar(15), @pp varchar(15), @e varchar(15)
 AS
 insert into UserData values(@u, @pp, @e)
 
-EXEC istUser @u = "Hadi", @pp = "123", @e = "h@gmail.com";
+EXEC istUser @u = "Hadi1", @pp = "1234", @e = "hadiyovillee25@gmail.com"
 ------------------------------------------
+--login check--
 CREATE PROCEDURE LoginReq @pp varchar(15), @e varchar(15)
 AS
 select email from UserData where email = @e AND pass = @pp
+
+EXEC LoginReq @pp = "123", @e = "dada@d"
+------------------------------------------
