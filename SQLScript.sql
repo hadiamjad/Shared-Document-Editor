@@ -31,7 +31,7 @@ Select * from Document
 Select * from DocumentEditors
 --------------------------------------------------
 insert into Document values('Welcome','Welcome to Docs','hadi@gmail.com', 3005)
-insert into Document values('Welcome 2','Welcome to Docs','hadi@gmail.com', 3006)
+insert into Document values('Welcome 3','Welcome to Docs','haris@gmail.com', 3007)
 DROP PROCEDURE retDocs; 
 ----------------------------------------------------
 --insert user--

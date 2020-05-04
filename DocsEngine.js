@@ -34,9 +34,11 @@ class Homepage{
     }
     loadDocuments(str, cb){
         var loadDocumentsHelper = function(result){
+            this.Documents=[]
             for(var c=0;c<result.rowsAffected[0];c++){
                 this.Documents[c]=new Document(result.recordset[c].title, result.recordset[c].dataTxt,result.recordset[c].creator,result.recordset[c].socket);
             }
+            
             cb(this.Documents);
            
         }
@@ -57,6 +59,8 @@ class Homepage{
                               error = 1
                           }
                           else{
+                              //console.log(str)
+                              //console.log(res)
                                loadDocumentsHelper(res)     
                           }
                       con1.close()

@@ -1,6 +1,7 @@
 const express = require('express')
 const fs = require('fs');
 const bodyParser = require('body-parser')
+const path = require('path')
 var getDocs = require('./DocsEngine.js');
 
 var homepage = new getDocs.Homepage();
@@ -37,23 +38,29 @@ app.get(["/Register"],function (request,response) {
 })
 
 // Document list landing page is loded
-app.get(["/Docs"],function (request,response) {	  
+app.get(["/Docs"],function (request,response) {	
+    console.log(CurrentUser) 
     homepage.loadDocuments(CurrentUser,function(docs){
-
-        //console.log(docs[0].generateHtmlforHomepage())
         var html = ""
 
         for(i=0; i< docs.length;i++){
             html+=docs[i].generateHtmlforHomepage();
         }
 
-        
+        CurrentUser = null;
         filePath = "Docx.html"
 
-        fs.readFile(filePath,function(err,contents){		
+       fs.readFile(filePath,function(err,contents){		
             response.send(contents.toString().replace("<!-- content -->",html));
         });
+ 
     });
+})
+
+// post request handler for get documentpage
+app.post('/Docs', urlencodedParser, function (req, response) {
+    CurrentUser = req.body.email
+    response.send("Succesful")
 })
 
 //login form request handler
@@ -79,8 +86,7 @@ app.post('/login', urlencodedParser, function (req, resp) {
                     error = 1
                 }
                 else{
-                    CurrentUser = req.body.Email
-                    resp.redirect('/Docs')
+                    resp.send(req.body.Email)                
                 }
             }
         con1.close()

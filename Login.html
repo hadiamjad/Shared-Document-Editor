@@ -9,12 +9,47 @@
 
 	 <!-- Compiled and minified JavaScript -->
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-			 
+	 
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	 <script>
+		var user;
+		var div=document.createElement("div");
+		var body= document.getElementById("bodyid")
+		$(document).ready(function(){
+			$("form").submit(function(event){
+			event.preventDefault()
+			var $form = $('form');
+			$.ajax({
+				type: "POST",
+				url: "/login",
+				data: $form.serialize(),
+				success: function (data) {
+					getDocumentPage(data)
+					
+				},
+				error: function(errorThrown ){
+					console.log( errorThrown );
+				}
+			});
+			});
+		});
 
-
+		function getDocumentPage(user){
+			$.ajax({
+				type: "POST",
+				url: "/Docs",
+				data:{
+					email : user
+				},
+				success: function (data) {
+					window.location.replace("http://localhost:3000/Docs");
+				}
+			});			
+		}
+	  </script>		 
 </head>
 <body>
-	<form id='login-form' method ="POST" action ="/login">
+	<form id='login-form'>
 		<div class="login">
 			<div class="row center-align">
 				<img class="Logo " src="./static/notepad-icon-png-8-original.png"></img>
