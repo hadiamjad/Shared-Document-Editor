@@ -55,3 +55,9 @@ select *  from Document where creator = @e
 
 EXEC retDocs @e = "hadi@gmail.com"
 ------------------------------------------
+--delete documents of user with docID--
+CREATE PROCEDURE delDocs  @ID int
+AS
+delete  from Document where Document.DocID = @ID
+
+EXEC delDocs @ID = 1

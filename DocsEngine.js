@@ -10,20 +10,23 @@ const dbConfig = {
 }
 
 class Document{
-    constructor(T,D=null,E=null,S,SU=null){
+    constructor(I,T,D=null,E=null,S,SU=null){
+        this.id= I,
         this.Title=T;
         this.Description=D;
         this.Email=E;
         this.SocketIO=S;
         this.SharedUsersList=SU;
     }
+
     generateHtmlforHomepage(){
-        var html="<div class='Box' >"
+        var html="<div class='Box' id='"+this.id+"'>"
         html+="<div class='Title'>" +this.Title+"</div>";
-        html+="<div class='Icons row ml-auto'><div class='Share col-sm-1'><i class='fas fa-user-friends'></i></div><div class='Delete col-sm-1'><i class='fas fa-trash-alt'></i></div></div></div>"
+        html+="<div class='Icons row ml-auto'><div class='Share col-sm-1'><i class='fas fa-user-friends'></i></div><div class='Delete col-sm-1'  id='"+this.id+"' ><i class='fas fa-trash-alt'></i></div></div></div>"
     
         return html;
     }
+
 }
 
 class Homepage{
@@ -36,9 +39,8 @@ class Homepage{
         var loadDocumentsHelper = function(result){
             this.Documents=[]
             for(var c=0;c<result.rowsAffected[0];c++){
-                this.Documents[c]=new Document(result.recordset[c].title, result.recordset[c].dataTxt,result.recordset[c].creator,result.recordset[c].socket);
-            }
-            
+                this.Documents[c]=new Document(result.recordset[c].DocID,result.recordset[c].title, result.recordset[c].dataTxt,result.recordset[c].creator,result.recordset[c].socket);
+            }            
             cb(this.Documents);
            
         }
@@ -59,8 +61,7 @@ class Homepage{
                               error = 1
                           }
                           else{
-                              //console.log(str)
-                              //console.log(res)
+
                                loadDocumentsHelper(res)     
                           }
                       con1.close()
@@ -84,5 +85,4 @@ class Homepage{
 module.exports={
     Document:Document,
     Homepage:Homepage
-
 };

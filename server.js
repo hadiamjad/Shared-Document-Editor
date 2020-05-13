@@ -8,25 +8,6 @@ const dbConfig = {
     password: "123"
 }
 
-io2.on('connection', socket =>{
-    socket.on('registry-coming', arr => {
-        var con1 = new sql.ConnectionPool(dbConfig)
-        var req1 = new sql.Request(con1)
-        con1.connect(function(err){
-            if(err){
-                console.log(err)
-                return
-            }
-            req1.query("EXEC istUser @u = \""+arr[2]+"\", @pp = \""+arr[1]+"\", @e = \""+arr[0]+"\"", err =>{
-                if(err){
-                    console.log('Username Already taken')
-                    return
-                }
-            con1.close()
-            })
-    })
-    })
-})
 
 io.on('connection', socket =>{
     socket.on('msg-to-server', textChanges => {

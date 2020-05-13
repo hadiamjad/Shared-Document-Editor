@@ -38,8 +38,7 @@ app.get(["/Register"],function (request,response) {
 })
 
 // Document list landing page is loded
-app.get(["/Docs"],function (request,response) {	
-    console.log(CurrentUser) 
+app.get(["/Docs"],function (request,response) {	 
     homepage.loadDocuments(CurrentUser,function(docs){
         var html = ""
 
@@ -47,11 +46,15 @@ app.get(["/Docs"],function (request,response) {
             html+=docs[i].generateHtmlforHomepage();
         }
 
-        CurrentUser = null;
+        
         filePath = "Docx.html"
+        value = "var user = \""+CurrentUser +"\"";
+        CurrentUser = null;
 
-       fs.readFile(filePath,function(err,contents){		
-            response.send(contents.toString().replace("<!-- content -->",html));
+       fs.readFile(filePath,function(err,contents){	
+            contents = contents.toString().replace("<!-- content -->",html);
+            contents= contents.toString().replace("/*username*/",value)	
+            response.send(contents);
         });
  
     });
@@ -61,6 +64,27 @@ app.get(["/Docs"],function (request,response) {
 app.post('/Docs', urlencodedParser, function (req, response) {
     CurrentUser = req.body.email
     response.send("Succesful")
+})
+
+// post request handler for delete documentpage
+app.post('/deleteDocs', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+    console.log(req.body.id)
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("EXEC delDocs @ID = "+req.body.id+" ", function(err,res){
+            if(err){
+                console.log('Query')
+                error = 1
+            }
+        con1.close()
+        })
+    })
+    response.send("Succesful /deleteDocs post request ")
 })
 
 //login form request handler
