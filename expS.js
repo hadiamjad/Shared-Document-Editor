@@ -4,9 +4,12 @@ const bodyParser = require('body-parser')
 const path = require('path')
 var getDocs = require('./DocsEngine.js');
 
+
+
 var homepage = new getDocs.Homepage();
 
 var CurrentUser = null
+var ClickedDoc = null
 
 const sql = require("mssql")
 const dbConfig = {
@@ -18,6 +21,38 @@ const dbConfig = {
 var app = express()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+var io = new Array(10)
+for(i=0;i<10;i++){
+    io[i] = require('socket.io')(5000+i);
+    io[i].on('connection', socket =>{
+        socket.on('msg-to-server', data => {
+            setDbms(data.textChanges,data.docID);
+            socket.broadcast.emit('chat-message', data.textChanges)
+        })
+    })
+}
+
+function setDbms(textChanges,docid){
+    var con = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con)
+    con.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("UPDATE Document SET dataTxt = '"+textChanges+"' where DocID="+docid+" ", function(err,res){
+            if(err){
+                console.log('Query')
+                error = 1
+            }
+            else{
+                //console.log("successful doc textbox")
+            }
+            
+        con.close()
+        })
+    })
+}
 
 // Login landing page is loded
 app.get(["/","/Login"],function (request,response) {	  
@@ -37,6 +72,50 @@ app.get(["/Register"],function (request,response) {
 	})
 })
 
+// editor landing page is loded
+app.get(["/editor"],function (request,response) {	  
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+    var dbout;
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("EXEC getDocs @ID = "+ClickedDoc+" ", function(err,res){
+            if(err){
+                console.log('Query')
+                error = 1
+            }
+            else{
+
+                value = "var user = \""+CurrentUser +"\"";
+                docid = "var docid = "+ClickedDoc +"";
+                socket = "const socket = io('http://localhost:"+res.recordset[0].socket+"')"
+                scripttag = "<script defer src = \"http://localhost:"+res.recordset[0].socket+"/socket.io/socket.io.js\"></script>"
+                data = "var data = \""+res.recordset[0].dataTxt +"\""
+                CurrentUser = null;
+                ClickedDoc = null;
+                
+                filePath = "index.html"
+                
+            
+                fs.readFile(filePath,function(err,contents){		
+                    contents= contents.toString().replace("/*username*/",value)	
+                    contents= contents.toString().replace("/*docid*/",docid)	
+                    contents= contents.toString().replace("/*socket*/",socket)
+                    contents= contents.toString().replace("/*data*/",data)
+                    contents= contents.toString().replace("<!-- script -->",scripttag)
+                    response.send(contents);	
+                })
+            }
+            
+        con1.close()
+        })
+    })
+
+})
+
 // Document list landing page is loded
 app.get(["/Docs"],function (request,response) {	 
     homepage.loadDocuments(CurrentUser,function(docs){
@@ -46,7 +125,6 @@ app.get(["/Docs"],function (request,response) {
             html+=docs[i].generateHtmlforHomepage();
         }
 
-        
         filePath = "Docx.html"
         value = "var user = \""+CurrentUser +"\"";
         CurrentUser = null;
@@ -70,7 +148,7 @@ app.post('/Docs', urlencodedParser, function (req, response) {
 app.post('/deleteDocs', urlencodedParser, function (req, response) {
     var con1 = new sql.ConnectionPool(dbConfig)
     var req1 = new sql.Request(con1)
-    console.log(req.body.id)
+
     con1.connect(function(err){
         if(err){
             console.log(err)
@@ -85,6 +163,34 @@ app.post('/deleteDocs', urlencodedParser, function (req, response) {
         })
     })
     response.send("Succesful /deleteDocs post request ")
+})
+
+// post request handler for newDoc
+app.post('/newDocs', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("EXEC istDocs @e =\""+req.body.email+"\"", function(err,res){
+            if(err){
+                console.log('Query in')
+                error = 1
+            }
+        con1.close()
+        })
+    })
+    response.send("Succesful /deleteDocs post request ")
+})
+
+// post request handler for clickDoc
+app.post('/clickDocs', urlencodedParser, function (req, response) {
+    CurrentUser = req.body.email
+    ClickedDoc = req.body.id
+    response.send("Succesful")
 })
 
 //login form request handler

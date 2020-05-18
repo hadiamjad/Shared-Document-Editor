@@ -27,7 +27,7 @@ function setDbms(textChanges){
         }
         req.query("Insert into DataText values(2,'"+textChanges+"','Hadi')")
 
-        req.query("UPDATE DataText SET dataTxt = '"+textChanges+"'")
+        req.query("UPDATE Document SET dataTxt = '"+textChanges+"' where DocID= ")
         con.close()
     })
 }

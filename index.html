@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="style2.css"/>
+    <link rel="stylesheet" type="text/css" href="./static/css/style2.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/07754de8e3.js" crossorigin="anonymous"></script>
 
@@ -10,13 +10,43 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-
-    <script src="jquery.multiform-text-editor.js"></script>
+    <!-- script -->
 
     <script>
-
+        /*username*/
+        /*docid*/
         function load(){
             var textbox=Main_contentBox.document;
+
+            /*socket*/
+
+            function initDoc(){
+                /*data*/
+                var iframe = document.getElementById("Main_contentBox");
+                var Changes = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                Changes.innerHTML= data
+            }
+            initDoc();
+
+            socket.on('chat-message', data =>{
+                appendText(data)
+            })
+
+            textbox.addEventListener("input", updateTextBoard => {
+                updateTextBoard.preventDefault()
+                var iframe = document.getElementById("Main_contentBox");
+                var Changes = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                //console.log(Changes.innerHTML)
+                socket.emit("msg-to-server", { textChanges: Changes.innerHTML, docID: docid })
+            })
+
+            function appendText(textChanges){
+                var iframe = document.getElementById("Main_contentBox");
+                var Changes = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                Changes.innerHTML=textChanges
+            }
+            ///
+            //var textbox=Main_contentBox.document;
             textbox.designMode="on";
 
             $('#Main_contentBox').contents().find('body').css("word-wrap", "break-word");
@@ -125,8 +155,8 @@
                 }   
             });
 
-            /*
-            textbox.addEventListener("input",function(){
+            
+            /*textbox.addEventListener("input",function(){
                 var iframe = document.getElementById("Main_contentBox");
                 var elmnt = iframe.contentWindow.document.getElementsByTagName("body")[0];
                 document.getElementById("temp").innerHTML=elmnt.innerHTML;
@@ -185,7 +215,7 @@
         <div id="TopBar">
             <nav class="navbar navbar-expand-md navbar-custom">
                 <a href="#"  >
-                    <img src="notepad-icon-png-8-original.png" height="28" >
+                    <img src="./static/notepad-icon-png-8-original.png" height="28" >
                 </a>
                 <input id="Name_document"  value="Untitled document">
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -243,6 +273,7 @@
             <span id="User_editing" class="col">Active Users List</span>
         </div>
     </div>
+    <div id='temp'></div>
     <script>
     var fonts =document.querySelectorAll("select#Font_picker > option");
     for(var i=0;i<fonts.length;i++){
