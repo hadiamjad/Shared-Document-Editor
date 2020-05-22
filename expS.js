@@ -21,8 +21,8 @@ const dbConfig = {
 var app = express()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-var io = new Array(10)
-for(i=0;i<10;i++){
+var io = new Array(100)
+for(i=0;i<100;i++){
     io[i] = require('socket.io')(5000+i);
     io[i].on('connection', socket =>{
         socket.on('msg-to-server', data => {
@@ -91,9 +91,10 @@ app.get(["/editor"],function (request,response) {
 
                 value = "var user = \""+CurrentUser +"\"";
                 docid = "var docid = "+ClickedDoc +"";
-                socket = "const socket = io('http://localhost:"+res.recordset[0].socket+"')"
-                scripttag = "<script defer src = \"http://localhost:"+res.recordset[0].socket+"/socket.io/socket.io.js\"></script>"
-                data = "var data = \""+res.recordset[0].dataTxt +"\""
+                socket = "const socket = io('http://localhost:"+res.recordset[0].socket+"')";
+                scripttag = "<script defer src = \"http://localhost:"+res.recordset[0].socket+"/socket.io/socket.io.js\"></script>";
+                data = "var data = \""+res.recordset[0].dataTxt +"\"";
+                doc_name = "<input id=\"Name_document\"  value=\""+res.recordset[0].title+"\" >"
                 CurrentUser = null;
                 ClickedDoc = null;
                 
@@ -105,6 +106,7 @@ app.get(["/editor"],function (request,response) {
                     contents= contents.toString().replace("/*docid*/",docid)	
                     contents= contents.toString().replace("/*socket*/",socket)
                     contents= contents.toString().replace("/*data*/",data)
+                    contents= contents.toString().replace("<!-- Name_document -->",doc_name)
                     contents= contents.toString().replace("<!-- script -->",scripttag)
                     response.send(contents);	
                 })
@@ -176,6 +178,28 @@ app.post('/newDocs', urlencodedParser, function (req, response) {
             return
         }
         req1.query("EXEC istDocs @e =\""+req.body.email+"\"", function(err,res){
+            if(err){
+                console.log('Query in')
+                error = 1
+            }
+        con1.close()
+        })
+    })
+    response.send("Succesful /newDoc post request ")
+})
+
+
+// post request handler for newDoc
+app.post('/nameChange', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("UPDATE Document SET title = '"+req.body.value+"' where DocID="+req.body.docID+" ", function(err,res){
             if(err){
                 console.log('Query in')
                 error = 1

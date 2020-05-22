@@ -45,6 +45,22 @@
                 var Changes = iframe.contentWindow.document.getElementsByTagName("body")[0];
                 Changes.innerHTML=textChanges
             }
+
+            var doc_name = document.getElementById("Name_document")
+            doc_name.addEventListener("change", e=>{
+                e.preventDefault();
+                    $.ajax({
+                        type: "POST",
+                        url: "/nameChange",
+                        data:{
+                            docID : docid,
+                            value : doc_name.value
+                        },
+                        success: function (data) {
+                            console.log("name change succesful")
+                        }
+                    });	
+            })
             ///
             //var textbox=Main_contentBox.document;
             textbox.designMode="on";
@@ -217,7 +233,7 @@
                 <a href="#"  >
                     <img src="./static/notepad-icon-png-8-original.png" height="28" >
                 </a>
-                <input id="Name_document"  value="Untitled document">
+                <!-- Name_document -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                     <i class="fas fa-bars"></i>
                 </button>

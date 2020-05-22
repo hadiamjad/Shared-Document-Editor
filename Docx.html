@@ -22,7 +22,32 @@
                 });
             }
 
-            var box = document.getElementsByClassName("Box")
+            var search = document.getElementsByClassName('form-control mr-sm-2')
+            search[0].addEventListener("input", e=>{
+                e.preventDefault()
+                var value = search[0].value
+                var boxes = document.getElementsByClassName('Box')
+                
+                if (value === ""){
+                    console.log(value)
+                    for(i = 1; i<boxes.length;i++){
+                        boxes[i].style.display = null
+                    }
+                }
+                else{
+                    for(i = 1; i<boxes.length;i++){
+                        var firstChild = boxes[i].firstChild.innerHTML
+                        if(firstChild.includes(value)){  
+                            boxes[i].style.display = "default"
+                        }
+                        else{
+                            boxes[i].style.display="none"
+                        }
+                    }
+                }
+            })
+
+            var box = document.getElementsByClassName("Title")
             for(i = 0; i< box.length;i++){
                 box[i].addEventListener("click", function(e) {
                     $.ajax({

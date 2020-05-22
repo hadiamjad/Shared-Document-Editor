@@ -80,3 +80,6 @@ EXEC istDocs @e = "hadi@gmail.com"
 CREATE PROCEDURE getDocs  @ID int
 AS
 select *  from Document where Document.DocID = @ID
+
+------------------------------------
+
