@@ -21,8 +21,8 @@ const dbConfig = {
 var app = express()
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-var io = new Array(100)
-for(i=0;i<100;i++){
+var io = new Array(300)
+for(i=0;i<300;i++){
     io[i] = require('socket.io')(5000+i);
     io[i].on('connection', socket =>{
         socket.on('msg-to-server', data => {
@@ -93,7 +93,7 @@ app.get(["/editor"],function (request,response) {
                 docid = "var docid = "+ClickedDoc +"";
                 socket = "const socket = io('http://localhost:"+res.recordset[0].socket+"')";
                 scripttag = "<script defer src = \"http://localhost:"+res.recordset[0].socket+"/socket.io/socket.io.js\"></script>";
-                data = "var data = \""+res.recordset[0].dataTxt +"\"";
+                data = 'var data = \''+String(res.recordset[0].dataTxt) +'\'';
                 doc_name = "<input id=\"Name_document\"  value=\""+res.recordset[0].title+"\" >"
                 CurrentUser = null;
                 ClickedDoc = null;
@@ -119,7 +119,13 @@ app.get(["/editor"],function (request,response) {
 })
 
 // Document list landing page is loded
-app.get(["/Docs"],function (request,response) {	 
+app.get(["/Docs"],function (request,response) {	
+    var sharedDocs = " "; 
+    homepage.loadcollabDocuments(CurrentUser,function(docs){
+        for(i=0; i< docs.length;i++){
+            sharedDocs+=docs[i].generateHtmlforHomepage2();
+        }
+    })
     homepage.loadDocuments(CurrentUser,function(docs){
         var html = ""
 
@@ -133,6 +139,7 @@ app.get(["/Docs"],function (request,response) {
 
        fs.readFile(filePath,function(err,contents){	
             contents = contents.toString().replace("<!-- content -->",html);
+            contents = contents.toString().replace("<!-- sharedDocs -->",sharedDocs);
             contents= contents.toString().replace("/*username*/",value)	
             response.send(contents);
         });
@@ -165,6 +172,49 @@ app.post('/deleteDocs', urlencodedParser, function (req, response) {
         })
     })
     response.send("Succesful /deleteDocs post request ")
+})
+
+// post request handler for collaborator documentpage
+app.post('/collab', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("EXEC istCollab @e = \""+req.body.email+"\", @ID = "+req.body.docID+" ", function(err,res){
+            if(err){
+                console.log('Query error in colloaborator')
+                error = 1
+            }
+        con1.close()
+        })
+    })
+    response.send("Succesful /collab post request ")
+})
+
+// post request handler for collaborator list documentpage
+app.post('/collabList', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("Select * from DocumentEditors where DocsID = "+req.body.docID+" ", function(err,res){
+            if(err){
+                console.log('Query error in colloaboratorList')
+                error = 1
+            }
+            response.send(res)
+        con1.close()
+        })
+    })
+    
 })
 
 // post request handler for newDoc
@@ -210,6 +260,27 @@ app.post('/nameChange', urlencodedParser, function (req, response) {
     response.send("Succesful /deleteDocs post request ")
 })
 
+// post request handler for delCollab
+app.post('/remCollab', urlencodedParser, function (req, response) {
+    var con1 = new sql.ConnectionPool(dbConfig)
+    var req1 = new sql.Request(con1)
+
+    con1.connect(function(err){
+        if(err){
+            console.log(err)
+            return
+        }
+        req1.query("Delete from DocumentEditors where email = '"+req.body.email+"' and DocsID="+req.body.docID+" ", function(err,res){
+            if(err){
+                console.log('Query in')
+                error = 1
+            }
+        con1.close()
+        })
+    })
+    response.send("Succesful /deleteDocs post request ")
+})
+
 // post request handler for clickDoc
 app.post('/clickDocs', urlencodedParser, function (req, response) {
     CurrentUser = req.body.email
@@ -229,7 +300,7 @@ app.post('/login', urlencodedParser, function (req, resp) {
             console.log(err)
             return
         }
-        req1.query("EXEC LoginReq @pp = \""+req.body.Password+"\", @e = \""+req.body.Email+"\"", function(err,res){
+        /*req1.query("EXEC LoginReq @pp = \""+req.body.Password+"\", @e = \""+req.body.Email+"\"", function(err,res){
             if(err){
                 console.log('Login check SQL Error')
                 error = 1
@@ -242,8 +313,38 @@ app.post('/login', urlencodedParser, function (req, resp) {
                 else{
                     resp.send(req.body.Email)                
                 }
+            }*/
+        req1.query("EXEC LoginReq1 @e = \"" + req.body.Email + "\"", function (err, res) {
+            if (err) {
+                console.log('Login check SQL Error')
+                error = 1
             }
-        con1.close()
+            else {
+                if (res.rowsAffected[0] == 0) {
+                    resp.send('Account doesnot exist.')
+                    error = 1
+                    //con1.close()
+                }
+                else {
+                    req1.query("EXEC LoginReq @pp = \""+req.body.Password+"\", @e = \""+req.body.Email+"\"", function (err, res) {
+                        if (err) {
+                            console.log('Login check SQL Error1')
+                            error = 1
+                        }
+                        //this is new part
+                        else {
+                            if (res.rowsAffected[0] == 0) {
+                                resp.send('Username password does not match.')
+                                error = 1
+                            }
+                            else {
+                                resp.send(req.body.Email)
+                            }
+                        }
+                        con1.close()
+                    })
+                }
+            }
         })
     })
 })
@@ -256,7 +357,7 @@ app.post('/register', urlencodedParser, function (req, resp) {
     var flag = 0; // 1 for error 0 for !error
 
     con1.connect(function(err){
-        if(err){
+        /*if(err){
             console.log(err)
             return
         }
@@ -271,6 +372,22 @@ app.post('/register', urlencodedParser, function (req, resp) {
                 resp.redirect('/Login')
             }
         con1.close()
+        })*/
+        if (err) {
+            console.log(err)
+            return
+        }
+        req1.query("EXEC istUser @u = \"" + req.body.UserName + "\", @pp = \"" + req.body.Password + "\", @e = \"" + req.body.Email + "\"", function (err, res) {
+            if (err) {
+                resp.send('Already Have Account.')
+                error = 1
+                //resp.redirect('/Login')
+            }
+            else {
+                console.log('Successfully Created')
+                resp.redirect('/Login')
+            }
+            con1.close()
         })
     })
 })

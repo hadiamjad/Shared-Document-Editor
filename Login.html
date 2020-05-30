@@ -15,7 +15,7 @@
 		var user;
 		var div=document.createElement("div");
 		var body= document.getElementById("bodyid")
-		$(document).ready(function(){
+		/*$(document).ready(function(){
 			$("form").submit(function(event){
 			event.preventDefault()
 			var $form = $('form');
@@ -32,8 +32,40 @@
 				}
 			});
 			});
-		});
+		})*/
 
+		$(document).ready(function () {
+            $("form").submit(function (event) {
+                event.preventDefault()
+                var $form = $('form');
+                $.ajax({
+                    type: "POST",
+                    url: "/login",
+                    data: $form.serialize(),
+                    //this is new part
+                    success: function (data) {
+                        str = 'Username password does not match.';
+                        str1 = "Account doesnot exist."
+                        if (str1.localeCompare(data) == 0) {
+                            var error = document.getElementById("error");
+                            error.textContent = "Account doesnot exist";
+                            error.style.color = "red";
+                        }
+                        else if (str.localeCompare(data) == 0) {
+                            var error = document.getElementById("error");
+                            error.textContent = "Username password does not match.";
+                            error.style.color = "red";
+                        }
+                        else
+                            getDocumentPage(data)
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            });
+		});
+		
 		function getDocumentPage(user){
 			$.ajax({
 				type: "POST",
@@ -71,6 +103,11 @@
 					<div><a href="#"><b>Forgot password?</b></a></div>
 				</div>
 			</div>
+			<div class="row center-align">
+                <div class="input-field col s12">
+                    <span id="error"></span>
+                </div>
+            </div>
 			<div class="row center-align">
 				<div class="input-field col s12">
 						<p>Do not have account? <a href="http://localhost:3000/Register" class="modal-trigger">Register</a></p>

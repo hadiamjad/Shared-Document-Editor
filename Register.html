@@ -11,7 +11,37 @@
 
 	 <!-- Compiled and minified JavaScript -->
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-			 
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+	 <script>
+        var user;
+        var div = document.createElement("div");
+        var body = document.getElementById("bodyid")
+        $(document).ready(function () {
+            $("form").submit(function (event) {
+                event.preventDefault()
+                var $form = $('form');
+                $.ajax({
+                    type: "POST", 
+                    url: "/register",
+                    data: $form.serialize(),
+                    //this is new part
+                    success: function (data) {
+                        str = 'Already Have Account.';
+                        if (str.localeCompare(data) == 0) {
+                            var error = document.getElementById("error");
+                            error.textContent = "Username/email already exist";
+                            error.style.color = "red";
+                        }
+                    },
+                    error: function (errorThrown) {
+                        console.log(errorThrown);
+                    }
+                });
+            });
+        });
+
+    </script>
 
 
 </head>
@@ -46,6 +76,11 @@
 					<label for="Password_PlaceHolder">Password</label>
 				</div>
 			</div>
+			<div class="row center-align">
+                <div class="input-field col s12">
+                    <span id="error"></span>
+                </div>
+            </div>
 			<div class="row center-align">
 				<div class="input-field col s12">
 					<p>Already have an account? <a href="http://localhost:3000/Login" class="modal-trigger">Login</a></p>

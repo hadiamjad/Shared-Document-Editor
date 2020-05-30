@@ -61,6 +61,89 @@
                         }
                     });	
             })
+            
+            var image = document.getElementsByTagName("img")
+            image[0].addEventListener("click",e=>{
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/Docs",
+                    data:{
+                        email : user
+                    },
+                    success: function (data) {
+                        window.location.replace("http://localhost:3000/Docs");
+                    }
+                });	
+            })
+            
+            $("#collaborate").click(function (e) {
+                var element = document.getElementById("list_collaborators");
+                    $.ajax({
+                        type: "POST",
+                        url: "/collabList",
+                        data:{
+                            docID : docid,
+                        },
+                        success: function (data) {
+                            console.log(data)
+                            html = ""
+                           for(i=0; i<data.rowsAffected[0];i++){
+                              html+="<li class='list-group-item'> <span>"+data.recordset[i].email+"</span>&nbsp<span class='float-right'><i id = '"+data.recordset[i].email+"' class='fas fa-trash-alt'></i></span></li>"
+                           }
+                           element.innerHTML = html;
+                           gen()
+                        }
+                    });
+                
+            });
+            function gen(){
+                var delCollab = document.getElementsByClassName("fas fa-trash-alt")
+                for(i = 0 ; i< delCollab.length;i++){
+                    delCollab[i].addEventListener("click", e=>{
+                        e.preventDefault();
+                        $.ajax({
+                            type: "POST",
+                            url: "/remCollab",
+                            data:{
+                                docID : docid,
+                                email : e.path[0].id
+                            },
+                            success: function (data) {
+
+                            }
+                        });
+                    })
+                }
+            }
+
+            $("#export").click(function () {
+                var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                    "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+                    "xmlns='http://www.w3.org/TR/REC-html40%27%3E" +
+                    "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+                var footer = "</body></html>";
+                var iframe = document.getElementById("Main_contentBox");
+                var elmnt = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                var sourceHTML = header + elmnt.innerHTML + footer;
+
+                var name = document.getElementById("Name_document").value;
+                name = name.concat('.doc');
+                var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+                var fileDownload = document.createElement("a");
+                document.body.appendChild(fileDownload);
+                fileDownload.href = source;
+                fileDownload.download = name;
+                fileDownload.click();
+                document.body.removeChild(fileDownload);
+            })
+            
+            var logout = document.getElementsByClassName("btn btn-danger")
+            logout[0].addEventListener("click", e=>{
+                e.preventDefault()
+                window.location.replace("http://localhost:3000/");
+            })
+            
             ///
             //var textbox=Main_contentBox.document;
             textbox.designMode="on";
@@ -227,6 +310,24 @@
     </script>
 </head>
 <body onload="load()">
+
+    <div class="modal" id="myModel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Collaborators</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <ul class="list-group" id="list_collaborators">
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="Notepad">
         <div id="TopBar">
             <nav class="navbar navbar-expand-md navbar-custom">
@@ -240,10 +341,10 @@
                 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ml-auto">
-                        <a href="#" class="nav-item nav-link ">File</a>
-                        <a href="#" class="nav-item nav-link">Export</a>
-                        <a href="#" class="nav-item nav-link">Collaborate</a>
+                        <a href="#" class="nav-item nav-link" id='export'>Export</a>
+                        <a href="#" class="nav-item nav-link" id='collaborate' data-toggle='modal' data-target='#myModel'>Collaborate</a>
                         <a href="#" class="nav-item nav-link">Help</a>
+                        <button type="button" class="btn btn-danger">Logout</button>
                         
                     </div>
                 </div>

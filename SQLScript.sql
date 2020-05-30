@@ -1,4 +1,5 @@
 create database Docs
+drop database Docs
 create table UserData(
 	username varchar(35), 
 	pass varchar(35),
@@ -25,8 +26,8 @@ create Table DocumentEditors(
 	DocsID int,
 	email varchar(35),
 	primary key(DocsId,email),
-	Foreign key (DocsID) references Document(DocID),
-	Foreign key (email) references UserData(email)
+	Foreign key (DocsID) references Document(DocID) on delete cascade,
+	Foreign key (email) references UserData(email) on delete cascade
 )
 go
 
@@ -38,6 +39,8 @@ Select * from DocumentEditors
 --------------------------------------------------
 insert into Document values('Welcome','Welcome to Docs','Hadiyoville25@gmail.com',default)
 insert into Document values('Welcome 2','Welcome to Docs','hadi@gmail.com', default)
+insert into DocumentEditors values(4,'Hadiyoville25@gmail.com')
+
 UPDATE Document SET dataTxt = 'hello' where DocID=3
 DROP PROCEDURE retDocs; 
 ----------------------------------------------------
@@ -56,11 +59,17 @@ select email from UserData where email = @e AND pass = @pp
 EXEC LoginReq @pp = "123", @e = "dada@d"
 ------------------------------------------
 --return documents of user--
-CREATE PROCEDURE retDocs  @e varchar(35)
+CREATE PROCEDURE retDocs1  @e varchar(35)
 AS
 select *  from Document where creator = @e
 
-EXEC retDocs @e = " Hadiyoville25@gmail.com"
+
+CREATE PROCEDURE retDocs  @e varchar(35)
+AS
+select *  from Document left join DocumentEditors on Document.DocID = DocumentEditors.DocsID   where email = @e
+
+drop procedure retDocs
+EXEC retDocs @e = "Hadiyoville25@gmail.com"
 ------------------------------------------
 --delete documents of user with docID--
 CREATE PROCEDURE delDocs  @ID int
@@ -82,4 +91,13 @@ AS
 select *  from Document where Document.DocID = @ID
 
 ------------------------------------
+--istcollaborator--
+CREATE PROCEDURE istCollab  @e varchar(35), @ID int
+AS
+insert into DocumentEditors values(@ID,@e)
 
+exec istCollab @e="hadi@gmail.com", @ID =1011 
+-------------------------------------
+CREATE PROCEDURE LoginReq1 @e varchar(35)
+AS
+select email from UserData where email = @e 
