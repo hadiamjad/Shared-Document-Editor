@@ -32,7 +32,10 @@
                             var error = document.getElementById("error");
                             error.textContent = "Username/email already exist";
                             error.style.color = "red";
-                        }
+						}
+						else{
+							window.location.replace("http://localhost:3000/");
+						}
                     },
                     error: function (errorThrown) {
                         console.log(errorThrown);

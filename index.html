@@ -4,10 +4,15 @@
     <link rel="stylesheet" type="text/css" href="./static/css/style2.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/07754de8e3.js" crossorigin="anonymous"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script>
+        window.___gcfg = {
+            parsetags: 'explicit'
+        };
+    </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <!-- script -->
@@ -32,6 +37,12 @@
                 appendText(data)
             })
 
+            socket.on('cursor', data =>{
+                var edit = document.getElementById("editing");
+                edit.innerHTML="Editing = "+data.Changing+""
+                //console.log(data.Changing)
+            })
+
             textbox.addEventListener("input", updateTextBoard => {
                 updateTextBoard.preventDefault()
                 var iframe = document.getElementById("Main_contentBox");
@@ -39,6 +50,15 @@
                 //console.log(Changes.innerHTML)
                 socket.emit("msg-to-server", { textChanges: Changes.innerHTML, docID: docid })
             })
+
+            textbox.addEventListener("keyup", e =>{
+                e.preventDefault()
+                var edit = document.getElementById("editing");
+                edit.innerHTML="Editing = "+user+""
+                //console.log(user)
+                socket.emit("mouse-activity", { Changing: user })
+            })
+            
 
             function appendText(textChanges){
                 var iframe = document.getElementById("Main_contentBox");
@@ -89,7 +109,7 @@
                             console.log(data)
                             html = ""
                            for(i=0; i<data.rowsAffected[0];i++){
-                              html+="<li class='list-group-item'> <span>"+data.recordset[i].email+"</span>&nbsp<span class='float-right'><i id = '"+data.recordset[i].email+"' class='fas fa-trash-alt'></i></span></li>"
+                              html+="<li class='list-group-item'> <span>"+data.recordset[i].email+"</span>&nbsp<span class='float-right'><i id = '"+data.recordset[i].email+"' class='fas fa-trash-alt' data-toggle='modal' data-target='#myModel'></i></span></li>"
                            }
                            element.innerHTML = html;
                            gen()
@@ -137,6 +157,34 @@
                 fileDownload.click();
                 document.body.removeChild(fileDownload);
             })
+
+            document.getElementById('render-link').addEventListener('click', renderSaveToDrive);
+            function renderSaveToDrive() {
+                var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                    "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+                    "xmlns='http://www.w3.org/TR/REC-html40%27%3E" +
+                    "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+                var footer = "</body></html>";
+                var iframe = document.getElementById("Main_contentBox");
+                var elmnt = iframe.contentWindow.document.getElementsByTagName("body")[0];
+                var sourceHTML = header + elmnt.innerHTML + footer;
+
+                var name = document.getElementById("Name_document").value;
+                name = name.concat('.doc');
+                var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+                var fileDownload = document.createElement("a");
+                document.body.appendChild(fileDownload);
+                fileDownload.href = source;
+                fileDownload.download = name;
+               // fileDownload.click();
+                document.body.removeChild(fileDownload);
+
+                gapi.savetodrive.render('savetodrive-div', {
+                    src: './static/' + name,
+                    filename: name,
+                    sitename: 'Notepad'
+                });
+            }
             
             var logout = document.getElementsByClassName("btn btn-danger")
             logout[0].addEventListener("click", e=>{
@@ -328,6 +376,22 @@
         </div>
     </div>
 
+    <div class="modal" id="myModel1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Save To Google Drive</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        Upload to Google Drive  
+                        <div id="savetodrive-div"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="Notepad">
         <div id="TopBar">
             <nav class="navbar navbar-expand-md navbar-custom">
@@ -343,6 +407,9 @@
                     <div class="navbar-nav ml-auto">
                         <a href="#" class="nav-item nav-link" id='export'>Export</a>
                         <a href="#" class="nav-item nav-link" id='collaborate' data-toggle='modal' data-target='#myModel'>Collaborate</a>
+                        <a href="#" class="nav-item nav-link" href="javascript:void(0)" id="render-link"
+                            data-toggle='modal' data-target='#myModel1'>Save to
+                            Drive</a>
                         <a href="#" class="nav-item nav-link">Help</a>
                         <button type="button" class="btn btn-danger">Logout</button>
                         
@@ -387,7 +454,7 @@
         </div>
         <div id="Footer">
             <span id="User_editing" class="col">Action:User 1 Editing</span>
-            <span id="User_editing" class="col">Active Users List</span>
+            <span id="editing" class="col">Active Users List</span>
         </div>
     </div>
     <div id='temp'></div>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="stylesheet" type="text/css" href="./static/css/style3.css"/>
+    <link rel="stylesheet" type="text/css" href="./static/css/style3.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/07754de8e3.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -12,10 +13,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
     <script>
+
         /*username*/
-        function script(){
-            
-            var ClickedDoc= null;
+        function script() {
+            var ClickedDoc = null;
+            var ClickedDocName = null;
             var share_elements = document.getElementsByClassName("Share col-sm-1")
             for (j = 0; j < share_elements.length; j++) {
                 share_elements[j].addEventListener("click", function (e) {
@@ -26,13 +28,14 @@
             var send_email = document.getElementById("share_send")
             send_email.addEventListener('click', function (e) {
                 e.preventDefault()
-                console.log(document.getElementById("collab").value)          
+                console.log(document.getElementById("collab").value)
                 $.ajax({
                     type: "POST",
                     url: "/collab",
-                    data:{
+                    data: {
                         docID: ClickedDoc,
-                        email: document.getElementById("collab").value
+                        email: document.getElementById("collab").value,
+                        creator: user
                     },
                     success: function (data) {
                         console.log("added in DB")
@@ -41,111 +44,127 @@
                 });
             });
 
+            var image = document.getElementsByTagName("img")
+            image[0].addEventListener("click",e=>{
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/Docs",
+                    data:{
+                        email : user
+                    },
+                    success: function (data) {
+                        window.location.replace("http://localhost:3000/Docs");
+                    }
+                });	
+            })
+
             var elements = document.getElementsByClassName("Delete col-sm-1")
-            for(i = 0; i< elements.length;i++){
-                elements[i].addEventListener("click", function(e) {
+            for (i = 0; i < elements.length; i++) {
+                elements[i].addEventListener("click", function (e) {
                     deleteThisDoc(e.path[1].id)
                 });
             }
 
             var search = document.getElementsByClassName('form-control mr-sm-2')
-            search[0].addEventListener("input", e=>{
+            search[0].addEventListener("input", e => {
                 e.preventDefault()
                 var value = search[0].value
                 var boxes = document.getElementsByClassName('Box')
-                
-                if (value === ""){
+
+                if (value === "") {
                     console.log(value)
-                    for(i = 1; i<boxes.length;i++){
+                    for (i = 1; i < boxes.length; i++) {
                         boxes[i].style.display = null
                     }
                 }
-                else{
-                    for(i = 1; i<boxes.length;i++){
+                else {
+                    for (i = 1; i < boxes.length; i++) {
                         var firstChild = boxes[i].firstChild.innerHTML
-                        if(firstChild.includes(value)){  
+                        if (firstChild.includes(value)) {
                             boxes[i].style.display = "default"
                         }
-                        else{
-                            boxes[i].style.display="none"
+                        else {
+                            boxes[i].style.display = "none"
                         }
                     }
                 }
             })
 
             var box = document.getElementsByClassName("Title")
-            for(i = 0; i< box.length;i++){
-                box[i].addEventListener("click", function(e) {
+            for (i = 0; i < box.length; i++) {
+                box[i].addEventListener("click", function (e) {
                     $.ajax({
-                    type: "POST",
-                    url: "/clickDocs",
-                    data:{
-                        id: e.path[1].id,
-                        email : user
-                    },
-                    success: function (data) {
-                        window.location.replace("http://localhost:3000/editor");
-                    }
-                });
+                        type: "POST",
+                        url: "/clickDocs",
+                        data: {
+                            id: e.path[1].id,
+                            email: user
+                        },
+                        success: function (data) {
+                            window.location.replace("http://localhost:3000/editor");
+                        }
+                    });
                 });
             }
 
             var newDoc = document.getElementsByClassName("Add col-sm-1")
-            newDoc[0].addEventListener("click", function(e){
+            newDoc[0].addEventListener("click", function (e) {
                 $.ajax({
                     type: "POST",
                     url: "/newDocs",
-                    data:{
+                    data: {
                         email: user
                     },
                     success: function (data) {
                         $.ajax({
                             type: "POST",
                             url: "/Docs",
-                            data:{
-                                email : user
+                            data: {
+                                email: user
                             },
                             success: function (data) {
                                 window.location.replace("http://localhost:3000/Docs");
                             }
-                        });	
+                        });
                     }
                 });
             });
-            
+
             var logout = document.getElementsByClassName("btn btn-danger")
-            logout[0].addEventListener("click", e=>{
+            logout[0].addEventListener("click", e => {
                 e.preventDefault()
                 window.location.replace("http://localhost:3000/");
             })
-        
+
         }
-        function deleteThisDoc(did){
+        function deleteThisDoc(did) {
             $.ajax({
-				type: "POST",
-				url: "/deleteDocs",
-				data:{
-					id : did
-				},
-				success: function (data) {
+                type: "POST",
+                url: "/deleteDocs",
+                data: {
+                    id: did
+                },
+                success: function (data) {
                     $.ajax({
                         type: "POST",
                         url: "/Docs",
-                        data:{
-                            email : user
+                        data: {
+                            email: user
                         },
                         success: function (data) {
                             window.location.replace("http://localhost:3000/Docs");
                         }
-                    });	
-				}
-			});
+                    });
+                }
+            });
         }
 
 
-</script>
+    </script>
 
 </head>
+
 <body onload="script();">
     <div class="modal" id="myModel">
         <div class="modal-dialog">
@@ -158,7 +177,7 @@
                         <input type="text" class="form-control" placeholder="Email" aria-label="Email" id="collab"
                             aria-describedby="basic-addon2">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" id = "share_send" type="button">Send</button>
+                            <button class="btn btn-outline-secondary" id="share_send" type="button" data-toggle='modal' data-target='#myModel'>Send</button>
                         </div>
                     </div>
                 </div>
@@ -169,31 +188,32 @@
     <div id="Notepad">
         <div id="TopBar">
             <nav class="navbar navbar-expand-md navbar-custom">
-                <a href="#"  >
-                    <img src="./static/notepad-icon-png-8-original.png" height="40" >
+                <a href="#">
+                    <img src="./static/notepad-icon-png-8-original.png" height="40">
                 </a>
-                <div class="navbar mr-auto" >My Documents</div>
-                <div class="navbar ml-auto" >
+                <div class="navbar mr-auto">My Documents</div>
+                <div class="navbar ml-auto">
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>&nbsp;
-                        <button type="button" class="btn btn-danger" >Logout</button>
+                        <!--<button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>-->&nbsp;
+                        <button type="button" class="btn btn-danger">Logout</button>
                     </form>
                 </div>
             </nav>
         </div>
-    
+
         <div class="Documents">
-                <div class="Box" >
-                        <div class="Title">New Document</div>
-                        <div class="Icons row ml-auto">
-                                <div class="Share col-sm-1"><i class="fas fa-user-friends"></i></div>
-                                <div class="Add col-sm-1"><i class="fas fa-file-medical"></i></div>
-                        </div>
+            <div class="Box">
+                <div class="Title">New Document</div>
+                <div class="Icons row ml-auto">
+                    <div class="Share col-sm-1"><i class="fas fa-user-friends"></i></div>
+                    <div class="Add col-sm-1"><i class="fas fa-file-medical"></i></div>
                 </div>
-                <!-- content -->
-                <!-- sharedDocs -->
+            </div>
+            <!-- content -->
+            <!-- sharedDocs -->
         </div>
-</div>
+    </div>
 </body>
+
 </html>
